@@ -71,8 +71,10 @@ void Error_Handler(void);
 #define DCMI_PWDN_GPIO_Port GPIOC
 #define ACC_INT_Pin GPIO_PIN_10
 #define ACC_INT_GPIO_Port GPIOE
+#define ACC_INT_EXTI_IRQn EXTI15_10_IRQn
 #define GYRO_INT_Pin GPIO_PIN_12
 #define GYRO_INT_GPIO_Port GPIOE
+#define GYRO_INT_EXTI_IRQn EXTI15_10_IRQn
 #define LCD_CS_Pin GPIO_PIN_15
 #define LCD_CS_GPIO_Port GPIOE
 #define LCD_BLK_Pin GPIO_PIN_10
