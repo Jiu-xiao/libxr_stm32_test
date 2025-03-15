@@ -9,3 +9,14 @@ find . -mindepth 1 -maxdepth 1 -type d ! -name '.*' -exec sh -c '
         cmake --build "$dir/build"
     done
 ' _ {} +
+
+echo "All targets build done."
+echo "Output files:"
+
+find . -maxdepth 3 -type f -exec sh -c '
+    for file do
+        if file "$file" | grep -q "ELF"; then
+            echo "\t$file"
+        fi
+    done
+' sh {} +
