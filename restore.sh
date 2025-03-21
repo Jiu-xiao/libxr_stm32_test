@@ -9,3 +9,6 @@ done
 # 还原 git 变更
 git restore .
 git reset .
+git reset --hard
+git clean -fd
+rm -rf .git/modules/*
