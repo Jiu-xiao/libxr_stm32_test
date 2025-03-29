@@ -29,7 +29,7 @@ set -e
 find . -mindepth 1 -maxdepth 1 -type d ! -name '.*' -exec sh -c '
     set -e
     for dir in "$@"; do
-        xr_cubemx_cfg -d "$dir" -c --xrobot
+        xr_cubemx_cfg -d "$dir" -c
         cmake "$dir" -B"$dir/build" -G Ninja -DCMAKE_TOOLCHAIN_FILE=./cmake/gcc-arm-none-eabi.cmake
         cmake --build "$dir/build"
     done

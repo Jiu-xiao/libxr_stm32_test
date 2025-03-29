@@ -41,7 +41,7 @@ Check-LastExit
 Write-Output "=== Starting second build process (with toolchain) ==="
 foreach ($dir in $dirs) {
     Write-Output ">>> Configuring and building with toolchain: $($dir.Name)"
-    & xr_cubemx_cfg -d $dir.FullName -c --xrobot
+    & xr_cubemx_cfg -d $dir.FullName -c
     Check-LastExit
 
     & cmake $dir.FullName -B"$($dir.FullName)\build" -G Ninja -DCMAKE_TOOLCHAIN_FILE="cmake\gcc-arm-none-eabi.cmake"
