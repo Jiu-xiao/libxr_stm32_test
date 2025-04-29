@@ -43,6 +43,8 @@ target_sources(stm32cubemx INTERFACE
     ../../Drivers/STM32F0xx_HAL_Driver/Src/stm32f0xx_hal_spi_ex.c
     ../../Drivers/STM32F0xx_HAL_Driver/Src/stm32f0xx_hal_tim.c
     ../../Drivers/STM32F0xx_HAL_Driver/Src/stm32f0xx_hal_tim_ex.c
+    ../../Drivers/STM32F0xx_HAL_Driver/Src/stm32f0xx_hal_uart.c
+    ../../Drivers/STM32F0xx_HAL_Driver/Src/stm32f0xx_hal_uart_ex.c
     ../../Core/Src/system_stm32f0xx.c
     ../../Core/Src/sysmem.c
     ../../Core/Src/syscalls.c
