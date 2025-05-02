@@ -544,3 +544,4 @@ size_t xBlocks = 0, xMaxSize = 0, xMinSize = portMAX_DELAY; /* portMAX_DELAY use
 	}
 	taskEXIT_CRITICAL();
 }
+
