@@ -1,0 +1,388 @@
+GPIO:
+  PA0-WKUP:
+    Label: USER_KEY
+    Pull: GPIO_PULLUP
+    Signal: GPXTI0
+    GPXTI: true
+  PA4:
+    Label: ACCL_CS
+    Pull: GPIO_PULLUP
+    Signal: GPIO_Output
+  PB0:
+    Label: GYRO_CS
+    Pull: GPIO_PULLUP
+    Signal: GPIO_Output
+  PC0:
+    Label: HW0
+    Signal: GPIO_Input
+  PC1:
+    Label: HW1
+    Signal: GPIO_Input
+  PC2:
+    Label: HW2
+    Signal: GPIO_Input
+  PC4:
+    Label: ACCL_INT
+    Pull: GPIO_PULLUP
+    Signal: GPXTI4
+    GPXTI: true
+  PC5:
+    Label: GYRO_INT
+    Pull: GPIO_PULLUP
+    Signal: GPXTI5
+    GPXTI: true
+  PG3:
+    Label: CMPS_INT
+    Pull: GPIO_PULLUP
+    Signal: GPXTI3
+    GPXTI: true
+  PG6:
+    Label: CMPS_RST
+    Pull: GPIO_PULLUP
+    Signal: GPIO_Output
+Peripherals:
+  TIM:
+    TIM1:
+      Period: 19999
+      Prescaler: 167
+      Channels:
+        CH1:
+          Label: TIM1
+          PWM: true
+          DutyCycle: null
+        CH2:
+          Label: TIM1
+          PWM: true
+          DutyCycle: null
+        CH3:
+          Label: TIM1
+          PWM: true
+          DutyCycle: null
+        CH4:
+          Label: TIM1
+          PWM: true
+          DutyCycle: null
+    TIM10:
+      Period: 4999
+      Prescaler: 167
+      Channels:
+        CH1:
+          Label: TIM10
+          PWM: true
+    TIM3:
+      Period: 65535
+      Prescaler: 167
+      Channels:
+        CH3:
+          Label: TIM3
+          PWM: true
+          DutyCycle: null
+    TIM4:
+      Period: 65535
+      Prescaler: 167
+      Channels:
+        CH3:
+          Label: TIM4
+          PWM: true
+          DutyCycle: null
+    TIM5:
+      Period: 65535
+      Prescaler: 167
+      Channels:
+        CH1:
+          Label: TIM5
+          PWM: true
+          DutyCycle: null
+        CH2:
+          Label: TIM5
+          PWM: true
+          DutyCycle: null
+        CH3:
+          Label: TIM5
+          PWM: true
+          DutyCycle: null
+    TIM7:
+      Period: 9
+      Prescaler: 167
+    TIM8:
+      Period: 19999
+      Prescaler: 167
+      Channels:
+        CH1:
+          Label: TIM8
+          PWM: true
+          DutyCycle: null
+        CH2:
+          Label: TIM8
+          PWM: true
+          DutyCycle: null
+        CH3:
+          Label: TIM8
+          PWM: true
+          DutyCycle: null
+  ADC:
+    ADC1:
+      ContinuousMode: true
+      RegularConversions:
+      - ADC_CHANNEL_TEMPSENSOR
+      - ADC_CHANNEL_VREFINT
+      Channels:
+      - ADC_CHANNEL_TEMPSENSOR
+      - ADC_CHANNEL_VREFINT
+      DMA: ENABLE
+      dma:
+        dma: &id001
+          request_id: '11'
+          peripheral: ADC1
+          stream: DMA2_Stream4
+          direction: MEMORY
+          periph_inc: false
+          mem_inc: false
+          periph_align: halfword
+          mem_align: halfword
+          mode: Circular
+          priority: Low
+          fifo: Disabled
+    ADC3:
+      ContinuousMode: true
+      RegularConversions:
+      - ADC_CHANNEL_8
+      Channels:
+      - ADC_CHANNEL_8
+      DMA: ENABLE
+      dma:
+        dma: &id002
+          request_id: '10'
+          peripheral: ADC3
+          stream: DMA2_Stream1
+          direction: MEMORY
+          periph_inc: false
+          mem_inc: false
+          periph_align: halfword
+          mem_align: halfword
+          mode: Circular
+          priority: Low
+          fifo: Disabled
+  SPI:
+    SPI1:
+      BaudRate: 5.25 MBits/s
+      Direction: SPI_DIRECTION_2LINES
+      CLKPolarity: SPI_POLARITY_HIGH
+      CLKPhase: SPI_PHASE_2EDGE
+      dma:
+        dma_rx: &id006
+          request_id: '0'
+          peripheral: SPI1_RX
+          stream: DMA2_Stream0
+          direction: MEMORY
+          periph_inc: false
+          mem_inc: false
+          periph_align: byte
+          mem_align: byte
+          mode: Normal
+          priority: High
+          fifo: Disabled
+        dma_tx: &id007
+          request_id: '1'
+          peripheral: SPI1_TX
+          stream: DMA2_Stream3
+          direction: PERIPH
+          periph_inc: false
+          mem_inc: false
+          periph_align: byte
+          mem_align: byte
+          mode: Normal
+          priority: High
+          fifo: Disabled
+      DMA_RX: ENABLE
+      DMA_TX: ENABLE
+  USART:
+    USART1:
+      Mode: Asynchronous
+      dma:
+        dma_rx: &id008
+          request_id: '8'
+          peripheral: USART1_RX
+          stream: DMA2_Stream5
+          direction: MEMORY
+          periph_inc: false
+          mem_inc: false
+          periph_align: byte
+          mem_align: byte
+          mode: Normal
+          priority: Medium
+          fifo: Disabled
+        dma_tx: &id009
+          request_id: '6'
+          peripheral: USART1_TX
+          stream: DMA2_Stream7
+          direction: PERIPH
+          periph_inc: false
+          mem_inc: false
+          periph_align: byte
+          mem_align: byte
+          mode: Normal
+          priority: Medium
+          fifo: Disabled
+      DMA_TX: ENABLE
+      DMA_RX: ENABLE
+    USART3:
+      BaudRate: 100000
+      WordLength: WORDLENGTH_9B
+      Parity: PARITY_EVEN
+      Mode: Asynchronous
+      dma:
+        dma_rx: &id010
+          request_id: '3'
+          peripheral: USART3_RX
+          stream: DMA1_Stream1
+          direction: MEMORY
+          periph_inc: false
+          mem_inc: false
+          periph_align: byte
+          mem_align: byte
+          mode: Normal
+          priority: High
+          fifo: Disabled
+      DMA_RX: ENABLE
+    USART6:
+      BaudRate: 460800
+      Mode: Asynchronous
+      dma:
+        dma_rx: &id011
+          request_id: '4'
+          peripheral: USART6_RX
+          stream: DMA2_Stream2
+          direction: MEMORY
+          periph_inc: false
+          mem_inc: false
+          periph_align: byte
+          mem_align: byte
+          mode: Normal
+          priority: Medium
+          fifo: Disabled
+        dma_tx: &id012
+          request_id: '5'
+          peripheral: USART6_TX
+          stream: DMA2_Stream6
+          direction: PERIPH
+          periph_inc: false
+          mem_inc: false
+          periph_align: byte
+          mem_align: byte
+          mode: Normal
+          priority: Medium
+          fifo: Disabled
+      DMA_RX: ENABLE
+      DMA_TX: ENABLE
+  I2C:
+    I2C1:
+      AddressingMode: 7-bit
+      DualAddressMode: false
+      NoStretchMode: false
+    I2C2:
+      AddressingMode: 7-bit
+      DualAddressMode: false
+      NoStretchMode: false
+      dma:
+        dma_tx: &id003
+          request_id: '2'
+          peripheral: I2C2_TX
+          stream: DMA1_Stream7
+          direction: PERIPH
+          periph_inc: false
+          mem_inc: false
+          periph_align: byte
+          mem_align: byte
+          mode: Normal
+          priority: High
+          fifo: Disabled
+      DMA_TX: ENABLE
+    I2C3:
+      AddressingMode: 7-bit
+      DualAddressMode: false
+      NoStretchMode: false
+      dma:
+        dma_rx: &id004
+          request_id: '7'
+          peripheral: I2C3_RX
+          stream: DMA1_Stream2
+          direction: MEMORY
+          periph_inc: false
+          mem_inc: false
+          periph_align: byte
+          mem_align: byte
+          mode: Normal
+          priority: Low
+          fifo: Disabled
+        dma_tx: &id005
+          request_id: '9'
+          peripheral: I2C3_TX
+          stream: DMA1_Stream4
+          direction: PERIPH
+          periph_inc: false
+          mem_inc: false
+          periph_align: byte
+          mem_align: byte
+          mode: Normal
+          priority: Low
+          fifo: Disabled
+      DMA_RX: ENABLE
+      DMA_TX: ENABLE
+  CAN:
+    CAN1:
+      BaudRate: '1000000'
+      Mode: CAN_MODE_NORMAL
+      TimeSeg1: CAN_BS1_6TQ
+      TimeSeg2: CAN_BS2_7TQ
+      AutoRetransmission: true
+      AutoWakeup: true
+    CAN2:
+      BaudRate: '1000000'
+      Mode: CAN_MODE_NORMAL
+      TimeSeg1: CAN_BS1_6TQ
+      TimeSeg2: CAN_BS2_7TQ
+      AutoRetransmission: true
+      AutoWakeup: true
+  USB:
+    USB_OTG_FS:
+      VBus: false
+DMA:
+  Requests:
+    '0': SPI1_RX
+    '1': SPI1_TX
+    '10': ADC3
+    '11': ADC1
+    '2': I2C2_TX
+    '3': USART3_RX
+    '4': USART6_RX
+    '5': USART6_TX
+    '6': USART1_TX
+    '7': I2C3_RX
+    '8': USART1_RX
+    '9': I2C3_TX
+    sNb: '12'
+  Configurations:
+    ADC1_11: *id001
+    ADC3_10: *id002
+    I2C2_TX_2: *id003
+    I2C3_RX_7: *id004
+    I2C3_TX_9: *id005
+    SPI1_RX_0: *id006
+    SPI1_TX_1: *id007
+    USART1_RX_8: *id008
+    USART1_TX_6: *id009
+    USART3_RX_3: *id010
+    USART6_RX_4: *id011
+    USART6_TX_5: *id012
+Timebase:
+  Source: TIM2
+  IRQ: TIM2_IRQn
+Mcu:
+  Family: STM32F4
+  Type: STM32F407IGH6
+ThreadX:
+  AllocationMethod: Static
+  MemPoolSize: 4096B
+  CorePresent: true
+  Tasks: {}
