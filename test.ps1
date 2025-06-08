@@ -44,7 +44,7 @@ foreach ($dir in $dirs) {
     & xr_cubemx_cfg -d $dir.FullName -c
     Check-LastExit
 
-    & cmake $dir.FullName -B"$($dir.FullName)\build" -G Ninja -DCMAKE_TOOLCHAIN_FILE="cmake\gcc-arm-none-eabi.cmake"
+    & cmake $dir.FullName -B"$($dir.FullName)\build" -G Ninja
     Check-LastExit
 
     & cmake --build "$($dir.FullName)\build"
