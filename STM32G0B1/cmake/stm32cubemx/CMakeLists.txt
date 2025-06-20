@@ -60,6 +60,7 @@ set(STM32_Drivers_Src
     ${CMAKE_SOURCE_DIR}/Drivers/STM32G0xx_HAL_Driver/Src/stm32g0xx_hal_fdcan.c
     ${CMAKE_SOURCE_DIR}/Drivers/STM32G0xx_HAL_Driver/Src/stm32g0xx_hal_i2c.c
     ${CMAKE_SOURCE_DIR}/Drivers/STM32G0xx_HAL_Driver/Src/stm32g0xx_hal_i2c_ex.c
+    ${CMAKE_SOURCE_DIR}/Drivers/STM32G0xx_HAL_Driver/Src/stm32g0xx_hal_iwdg.c
     ${CMAKE_SOURCE_DIR}/Drivers/STM32G0xx_HAL_Driver/Src/stm32g0xx_hal_uart.c
     ${CMAKE_SOURCE_DIR}/Drivers/STM32G0xx_HAL_Driver/Src/stm32g0xx_hal_uart_ex.c
     ${CMAKE_SOURCE_DIR}/Drivers/STM32G0xx_HAL_Driver/Src/stm32g0xx_hal_spi.c

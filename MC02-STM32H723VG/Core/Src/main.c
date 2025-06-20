@@ -24,6 +24,7 @@
 #include "dma.h"
 #include "fdcan.h"
 #include "i2c.h"
+#include "iwdg.h"
 #include "memorymap.h"
 #include "octospi.h"
 #include "spi.h"
@@ -119,6 +120,7 @@ int main(void)
   MX_OCTOSPI2_Init();
   MX_TIM2_Init();
   MX_I2C4_Init();
+  MX_IWDG1_Init();
   /* USER CODE BEGIN 2 */
 
   /* USER CODE END 2 */
@@ -165,10 +167,11 @@ void SystemClock_Config(void)
   * in the RCC_OscInitTypeDef structure.
   */
   RCC_OscInitStruct.OscillatorType = RCC_OSCILLATORTYPE_HSI48|RCC_OSCILLATORTYPE_HSI
-                              |RCC_OSCILLATORTYPE_HSE;
+                              |RCC_OSCILLATORTYPE_LSI|RCC_OSCILLATORTYPE_HSE;
   RCC_OscInitStruct.HSEState = RCC_HSE_ON;
   RCC_OscInitStruct.HSIState = RCC_HSI_DIV1;
   RCC_OscInitStruct.HSICalibrationValue = 64;
+  RCC_OscInitStruct.LSIState = RCC_LSI_ON;
   RCC_OscInitStruct.HSI48State = RCC_HSI48_ON;
   RCC_OscInitStruct.PLL.PLLState = RCC_PLL_ON;
   RCC_OscInitStruct.PLL.PLLSource = RCC_PLLSOURCE_HSE;
