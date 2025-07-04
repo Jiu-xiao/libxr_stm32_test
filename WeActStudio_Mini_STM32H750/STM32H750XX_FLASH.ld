@@ -196,21 +196,7 @@ SECTIONS
     . = ALIGN(8);
   } >DTCMRAM
 
-  .ram_d3 (NOLOAD) : 
-  {
-    . = ALIGN(4);
-    *(.ram_d3)
-    *(.ram_d3*)
-    . = ALIGN(4);
-  } >RAM_D3
 
-  .axi_ram (NOLOAD) :
-  {
-    . = ALIGN(4);
-    *(.axi_ram)
-    *(.axi_ram*)
-    . = ALIGN(4);
-  } >RAM
 
   /* Remove information from the standard libraries */
   /DISCARD/ :
