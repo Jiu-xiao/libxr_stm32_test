@@ -1,3 +1,7 @@
+param(
+    [string]$Branch = "master"
+)
+
 Set-StrictMode -Version Latest
 $ErrorActionPreference = "Stop"
 
@@ -16,6 +20,11 @@ $dirs = Get-ChildItem -Directory | Where-Object { $_.Name -notmatch '^\.' }
 foreach ($dir in $dirs) {
     Write-Output ">>> Configuring and building: $($dir.Name)"
     & xr_cubemx_cfg -d $dir.FullName
+    Check-LastExit
+
+    Push-Location "$($dir.FullName)\Middlewares\Third_Party\LibXR"
+    git checkout $Branch
+    Pop-Location
     Check-LastExit
 
     & cmake -S $dir.FullName -B "$($dir.FullName)\build" -G Ninja
@@ -42,6 +51,11 @@ Write-Output "=== Starting second build process (with toolchain) ==="
 foreach ($dir in $dirs) {
     Write-Output ">>> Configuring and building with toolchain: $($dir.Name)"
     & xr_cubemx_cfg -d $dir.FullName -c
+    Check-LastExit
+
+    Push-Location "$($dir.FullName)\Middlewares\Third_Party\LibXR"
+    git checkout $Branch
+    Pop-Location
     Check-LastExit
 
     & cmake $dir.FullName -B"$($dir.FullName)\build" -G Ninja
