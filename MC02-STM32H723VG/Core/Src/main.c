@@ -21,6 +21,7 @@
 #include "cmsis_os.h"
 #include "adc.h"
 #include "bdma.h"
+#include "dac.h"
 #include "dma.h"
 #include "fdcan.h"
 #include "i2c.h"
@@ -121,6 +122,7 @@ int main(void)
   MX_TIM2_Init();
   MX_I2C4_Init();
   MX_IWDG1_Init();
+  MX_DAC1_Init();
   /* USER CODE BEGIN 2 */
 
   /* USER CODE END 2 */

@@ -21,6 +21,7 @@
 #include "cmsis_os.h"
 #include "adc.h"
 #include "bdma.h"
+#include "dac.h"
 #include "dma.h"
 #include "i2c.h"
 #include "usart.h"
@@ -115,6 +116,7 @@ int main(void)
   MX_I2C1_Init();
   MX_ADC3_Init();
   MX_USART1_UART_Init();
+  MX_DAC1_Init();
   /* USER CODE BEGIN 2 */
 
   /* USER CODE END 2 */
