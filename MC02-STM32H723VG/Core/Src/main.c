@@ -26,8 +26,6 @@
 #include "fdcan.h"
 #include "i2c.h"
 #include "iwdg.h"
-#include "memorymap.h"
-#include "octospi.h"
 #include "spi.h"
 #include "tim.h"
 #include "usart.h"
@@ -118,7 +116,6 @@ int main(void)
   MX_FDCAN2_Init();
   MX_FDCAN3_Init();
   MX_TIM1_Init();
-  MX_OCTOSPI2_Init();
   MX_TIM2_Init();
   MX_I2C4_Init();
   MX_IWDG1_Init();
@@ -228,8 +225,7 @@ void Error_Handler(void)
   }
   /* USER CODE END Error_Handler_Debug */
 }
-
-#ifdef  USE_FULL_ASSERT
+#ifdef USE_FULL_ASSERT
 /**
   * @brief  Reports the name of the source file and the source line number
   *         where the assert_param error has occurred.
