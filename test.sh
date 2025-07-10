@@ -1,47 +1,36 @@
 #!/bin/sh
 
-./restore.sh
-
 set -e
-find . -mindepth 1 -maxdepth 1 -type d ! -name '.*' -exec sh -c '
-    set -e
-    for dir in "$@"; do
-        xr_cubemx_cfg -d "$dir"
-        cmake "$dir" -B"$dir/build" -G Ninja
-        cmake --build "$dir/build"
-    done
-' _ {} +
-
-echo "All targets build done."
-echo "Output files:"
-
-find . -maxdepth 3 -type f -exec sh -c '
-    for file do
-        if file "$file" | grep -q "ELF"; then
-            echo "\t$file"
-        fi
-    done
-' sh {} +
 
 ./restore.sh
 
-set -e
-find . -mindepth 1 -maxdepth 1 -type d ! -name '.*' -exec sh -c '
-    set -e
-    for dir in "$@"; do
-        xr_cubemx_cfg -d "$dir" -c
-        cmake "$dir" -B"$dir/build" -G Ninja -DCMAKE_TOOLCHAIN_FILE=./cmake/gcc-arm-none-eabi.cmake
-        cmake --build "$dir/build"
-    done
-' _ {} +
+echo "==== Batch build (gcc + clang: HYBRID/NEWLIB/PICOLIBC) ===="
 
-echo "All targets build done."
-echo "Output files:"
+for dir in */ ; do
+    # 跳过隐藏目录
+    [ "${dir#.*}" != "$dir" ] && continue
 
-find . -maxdepth 3 -type f -exec sh -c '
-    for file do
-        if file "$file" | grep -q "ELF"; then
-            echo "\t$file"
-        fi
+    dir="${dir%/}"
+    echo ">>> Processing $dir"
+
+    xr_cubemx_cfg -d "$dir"
+
+    # GCC build
+    echo ">>>> [GCC] Building"
+    cmake "$dir" -B"$dir/build-gcc" -G Ninja -DCMAKE_TOOLCHAIN_FILE="$dir/cmake/gcc-arm-none-eabi.cmake"
+    cmake --build "$dir/build-gcc"
+
+    # Clang configs
+    for cfg in STARM_HYBRID STARM_NEWLIB STARM_PICOLIBC; do
+        echo ">>>> [Clang] Config: $cfg"
+        cmake "$dir" -B"$dir/build-clang-$cfg" -G Ninja -DCMAKE_TOOLCHAIN_FILE="$dir/cmake/starm-clang.cmake" -DSTARM_TOOLCHAIN_CONFIG=$cfg
+        cmake --build "$dir/build-clang-$cfg"
     done
-' sh {} +
+done
+
+echo "==== All builds done. Output ELF files: ===="
+find . -maxdepth 3 -type f | while read file; do
+    if file "$file" 2>/dev/null | grep -q "ELF"; then
+        echo "    $file"
+    fi
+done
