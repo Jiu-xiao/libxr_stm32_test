@@ -11,27 +11,32 @@ function Check-LastExit {
     }
 }
 
-function Build-Project($dir, $toolchain, $extraArgs = "", $buildSuffix = "") {
-    $buildDir = "$($dir.FullName)\build$buildSuffix"
+function Build-Project($dir, $toolchain, [string[]]$extraArgs = @(), $buildSuffix = "") {
+    $buildDir = Join-Path $dir.FullName ("build" + $buildSuffix)
     if (Test-Path $buildDir) {
         Remove-Item -Recurse -Force $buildDir
     }
 
-    $cmakeArgs = @(
-        "-S", "$($dir.FullName)",
-        "-B", "$buildDir",
-        "-G", "Ninja"
-    )
+    # 修正路径分隔符为 /
+    $toolchainFile = $null
     if ($toolchain) {
-        $toolchainFile = Join-Path $dir.FullName "cmake\$toolchain"
-        $cmakeArgs += "-DCMAKE_TOOLCHAIN_FILE=$toolchainFile"
-    }
-    if ($extraArgs) {
-        # 支持多参数（如 -DXXX -DFOO=BAR），自动分割
-        $cmakeArgs += $extraArgs -split ' '
+        $toolchainFile = (Join-Path $dir.FullName ("cmake\" + $toolchain)) -replace '\\', '/'
     }
 
-    Write-Output "CMake args: $cmakeArgs"
+    $cmakeArgs = @(
+        "-S", "$($dir.FullName -replace '\\','/')",
+        "-B", "$($buildDir -replace '\\','/')",
+        "-G", "Ninja"
+    )
+    if ($toolchainFile) {
+        $cmakeArgs += "-DCMAKE_TOOLCHAIN_FILE=$toolchainFile"
+    }
+    if ($extraArgs.Count -gt 0) {
+        $cmakeArgs += $extraArgs
+    }
+
+    Write-Output "CMake args: $($cmakeArgs -join ' ')"
+
     & cmake @cmakeArgs
     Check-LastExit
 
@@ -50,29 +55,34 @@ foreach ($dir in $dirs) {
     & xr_cubemx_cfg -d $dir.FullName
     Check-LastExit
 
-    Push-Location "$($dir.FullName)\Middlewares\Third_Party\LibXR"
+    Push-Location (Join-Path $dir.FullName "Middlewares\Third_Party\LibXR")
     git checkout $Branch
     Pop-Location
     Check-LastExit
 
     # 1. GCC 构建
     Write-Output ">>>> [GCC] Building"
-    Build-Project $dir "gcc-arm-none-eabi.cmake" "" "-gcc"
+    Build-Project $dir "gcc-arm-none-eabi.cmake" @() "-gcc"
 
     # 2. Clang 三种配置
     $clangConfigs = @("STARM_HYBRID", "STARM_NEWLIB", "STARM_PICOLIBC")
     foreach ($cfg in $clangConfigs) {
         Write-Output ">>>> [Clang] Config: $cfg"
-        Build-Project $dir "starm-clang.cmake" "-DSTARM_TOOLCHAIN_CONFIG=$cfg" "-clang-$cfg"
+        Build-Project $dir "starm-clang.cmake" @("-DSTARM_TOOLCHAIN_CONFIG=$cfg") ("-clang-$cfg")
     }
 }
 
 Write-Output "=== All builds complete. Output ELF files: ==="
 $files = Get-ChildItem -Recurse -File -Depth 3
 foreach ($file in $files) {
-    $content = [System.IO.File]::ReadAllBytes($file.FullName)
-    if ($content.Length -ge 4 -and $content[0] -eq 0x7F -and $content[1] -eq 0x45 -and $content[2] -eq 0x4C -and $content[3] -eq 0x46) {
-        Write-Output "`t$($file.FullName)"
+    try {
+        $content = [System.IO.File]::ReadAllBytes($file.FullName)
+        if ($content.Length -ge 4 -and $content[0] -eq 0x7F -and $content[1] -eq 0x45 -and $content[2] -eq 0x4C -and $content[3] -eq 0x46) {
+            Write-Output "`t$($file.FullName)"
+        }
+    }
+    catch {
+        # 忽略读取错误
     }
 }
 
