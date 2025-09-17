@@ -25,17 +25,10 @@
 
 /* Private includes ----------------------------------------------------------*/
 /* USER CODE BEGIN Includes */
-#include <ux_api.h>
-#include <ux_system.h>
-#include <ux_device_class_cdc_acm.h>
-#include <ux_device_descriptors.h>
-#include <ux_dcd_stm32.h>
 /* USER CODE END Includes */
 
 /* Private typedef -----------------------------------------------------------*/
 /* USER CODE BEGIN PTD */
-// USBX 全局内存池大小
-extern PCD_HandleTypeDef hpcd_USB_OTG_FS;
 /* USER CODE END PTD */
 
 /* Private define ------------------------------------------------------------*/
@@ -58,7 +51,7 @@ static TX_BYTE_POOL tx_app_byte_pool;
 #include "app_main.h"
 void init_thread_entry(ULONG thread_input)
 {
-  UNUSED(thread_input);
+  (void)(thread_input);
   app_main();
 }
 /* USER CODE END PV */
