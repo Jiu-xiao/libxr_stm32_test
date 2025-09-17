@@ -23,9 +23,6 @@
 
 /* Defines ------------------------------------------------------------------*/
 /* STMicroelectronics.X-CUBE-AZRTOS-F4.1.1.0 */
-#define USBXDEVICE_ENABLED
-#define UX_DEVICE_CONTROLLERS_ENABLED
-#define UX_DEVICE_CDC_ACM
 #define THREADX_ENABLED
 
 #endif /* __RTE_COMPONENTS_H__ */

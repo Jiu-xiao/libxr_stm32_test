@@ -2,6 +2,12 @@
 
 set -e
 
+# 支持传 branch 参数，默认 master
+branch="master"
+if [ $# -ge 1 ]; then
+    branch="$1"
+fi
+
 ./restore.sh
 
 echo "==== Batch build (gcc + clang: HYBRID/NEWLIB/PICOLIBC) ===="
@@ -16,6 +22,11 @@ for dir in */ ; do
     cd "$dir"
 
     xr_cubemx_cfg -d .
+
+    # ===== 切换 LibXR 到目标分支 =====
+    libxr_dir="Middlewares/Third_Party/LibXR"
+    echo ">>>> [Git] LibXR: checkout $branch"
+    (cd "$libxr_dir" && git checkout "$branch")
 
     # GCC build
     echo ">>>> [GCC] Building"

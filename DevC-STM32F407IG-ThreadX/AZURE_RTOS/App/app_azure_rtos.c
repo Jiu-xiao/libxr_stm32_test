@@ -54,11 +54,6 @@ extern PCD_HandleTypeDef hpcd_USB_OTG_FS;
 static UCHAR tx_byte_pool_buffer[TX_APP_MEM_POOL_SIZE];
 static TX_BYTE_POOL tx_app_byte_pool;
 
-/* USER CODE BEGIN UX_Device_Pool_Buffer */
-/* USER CODE END UX_Device_Pool_Buffer */
-static UCHAR  ux_device_byte_pool_buffer[UX_DEVICE_APP_MEM_POOL_SIZE];
-static TX_BYTE_POOL ux_device_app_byte_pool;
-
 /* USER CODE BEGIN PV */
 #include "app_main.h"
 void init_thread_entry(ULONG thread_input)
@@ -113,34 +108,6 @@ VOID tx_application_define(VOID *first_unused_memory)
 
   }
 
-  if (tx_byte_pool_create(&ux_device_app_byte_pool, "Ux App memory pool", ux_device_byte_pool_buffer, UX_DEVICE_APP_MEM_POOL_SIZE) != TX_SUCCESS)
-  {
-    /* USER CODE BEGIN UX_Device_Byte_Pool_Error */
-
-    /* USER CODE END UX_Device_Byte_Pool_Error */
-  }
-  else
-  {
-    /* USER CODE BEGIN UX_Device_Byte_Pool_Success */
-
-    /* USER CODE END UX_Device_Byte_Pool_Success */
-
-    memory_ptr = (VOID *)&ux_device_app_byte_pool;
-
-    if (MX_USBX_Device_Init(memory_ptr) != UX_SUCCESS)
-    {
-      /* USER CODE BEGIN MX_USBX_Device_Init_Error */
-
-      /* USER CODE END MX_USBX_Device_Init_Error */
-    }
-
-    /* USER CODE BEGIN MX_USBX_Device_Init_Success */
-    static TX_THREAD init_thread;
-    CHAR init_thread_name[] = "Init Thread";
-    static char init_thread_mem[4096];
-    tx_thread_create(&init_thread, init_thread_name, init_thread_entry, (ULONG)(0), init_thread_mem, 4096, 3, 3, TX_NO_TIME_SLICE, TX_AUTO_START);
-    /* USER CODE END MX_USBX_Device_Init_Success */
-  }
 }
 
 /* USER CODE BEGIN  0 */
