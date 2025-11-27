@@ -117,6 +117,7 @@ void MX_FREERTOS_Init(void) {
 }
 
 /* USER CODE BEGIN Header_StartDefaultTask */
+#include "app_main.h"
 /**
   * @brief  Function implementing the defaultTask thread.
   * @param  argument: Not used
@@ -126,6 +127,7 @@ void MX_FREERTOS_Init(void) {
 void StartDefaultTask(void *argument)
 {
   /* USER CODE BEGIN StartDefaultTask */
+  app_main();
   /* Infinite loop */
   for(;;)
   {

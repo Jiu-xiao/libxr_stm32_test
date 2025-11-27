@@ -21,7 +21,6 @@ endif()
 # Set the project name
 set(CMAKE_PROJECT_NAME DevC)
 
-
 # Enable compile command to ease indexing with e.g. clangd
 set(CMAKE_EXPORT_COMPILE_COMMANDS TRUE)
 

@@ -21,7 +21,6 @@ endif()
 # Set the project name
 set(CMAKE_PROJECT_NAME WeActStudio_Mini_STM32F401RC)
 
-
 # Enable compile command to ease indexing with e.g. clangd
 set(CMAKE_EXPORT_COMPILE_COMMANDS TRUE)
 
