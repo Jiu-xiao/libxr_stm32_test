@@ -1,5 +1,6 @@
 param(
-    [string]$Branch = "master"
+    [string]$Branch = "master",
+    [string[]]$Target = @()
 )
 
 Set-StrictMode -Version Latest
@@ -48,7 +49,19 @@ Write-Output "=== Running restore.ps1 ==="
 & .\restore.ps1
 Check-LastExit
 
-$dirs = Get-ChildItem -Directory | Where-Object { $_.Name -notmatch '^\.' }
+$dirs = if ($Target.Count -gt 0) {
+    foreach ($name in $Target) {
+        $dir = Get-Item -Path $name -ErrorAction SilentlyContinue
+        if (-not $dir -or -not $dir.PSIsContainer) {
+            throw "Target directory not found: $name"
+        }
+        $dir
+    }
+}
+else {
+    Get-ChildItem -Directory | Where-Object { $_.Name -notmatch '^\.' }
+}
+
 foreach ($dir in $dirs) {
     Write-Output ">>> Processing: $($dir.Name)"
 
