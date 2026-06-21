@@ -2,21 +2,37 @@
 
 set -e
 
-# 支持传 branch 参数，默认 master
+# 支持传 branch 和 target 参数，默认 branch=master 且构建全部板子。
 branch="master"
 if [ $# -ge 1 ]; then
     branch="$1"
+    shift
 fi
+
+targets="$*"
+
+select_dirs() {
+    if [ -n "$targets" ]; then
+        for target in $targets; do
+            if [ ! -d "$target" ]; then
+                echo "Target directory not found: $target" >&2
+                exit 1
+            fi
+            printf '%s\n' "$target"
+        done
+    else
+        for dir in */ ; do
+            [ "${dir#.*}" != "$dir" ] && continue
+            printf '%s\n' "${dir%/}"
+        done
+    fi
+}
 
 ./restore.sh
 
 echo "==== Batch build (gcc + clang: HYBRID/NEWLIB/PICOLIBC) ===="
 
-for dir in */ ; do
-    # 跳过隐藏目录
-    [ "${dir#.*}" != "$dir" ] && continue
-
-    dir="${dir%/}"
+select_dirs | while IFS= read -r dir; do
     echo ">>> Processing $dir"
 
     cd "$dir"
