@@ -1,5 +1,5 @@
 param(
-    [string]$Branch = "master",
+    [string]$Branch = "dev",
     [string[]]$Target = @()
 )
 
@@ -58,6 +58,10 @@ else {
     Get-ChildItem -Directory | Where-Object { $_.Name -notmatch '^\.' -and (Test-Path (Join-Path $_.FullName 'CMakeLists.txt')) }
 }
 
+if (-not $dirs) {
+    throw "No STM32 target projects found."
+}
+
 foreach ($dir in $dirs) {
     Write-Output ">>> Processing: $($dir.Name)"
 
@@ -79,6 +83,19 @@ foreach ($dir in $dirs) {
     $clangConfigs = @("STARM_HYBRID", "STARM_NEWLIB", "STARM_PICOLIBC")
     foreach ($cfg in $clangConfigs) {
         Write-Output ">>>> [Clang] Config: $cfg"
+        $stdlib = switch ($cfg) {
+            "STARM_HYBRID" { "--hybrid" }
+            "STARM_NEWLIB" { "--newlib" }
+            "STARM_PICOLIBC" { "--picolibc" }
+        }
+        Push-Location $dir.FullName
+        try {
+            & xr_stm32_toolchain_switch clang $stdlib
+            Check-LastExit
+        }
+        finally {
+            Pop-Location
+        }
         Build-Project $dir "starm-clang.cmake" @("-DSTARM_TOOLCHAIN_CONFIG=$cfg") ("-clang-$cfg")
     }
 }

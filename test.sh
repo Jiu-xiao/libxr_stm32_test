@@ -2,8 +2,8 @@
 
 set -e
 
-# 支持传 branch 和 target 参数，默认 branch=master 且构建全部板子。
-branch="master"
+# 支持传 branch 和 target 参数，默认 branch=dev 且构建全部板子。
+branch="dev"
 if [ $# -ge 1 ]; then
     branch="$1"
     shift
@@ -32,7 +32,12 @@ select_dirs() {
 
 echo "==== Batch build (gcc + clang: HYBRID/NEWLIB/PICOLIBC) ===="
 
-select_dirs | while IFS= read -r dir; do
+selected_dirs=$(select_dirs)
+if [ -z "$selected_dirs" ]; then
+    echo "No STM32 target projects found." >&2
+    exit 1
+fi
+printf '%s\n' "$selected_dirs" | while IFS= read -r dir; do
     echo ">>> Processing $dir"
 
     cd "$dir"
@@ -55,6 +60,12 @@ select_dirs | while IFS= read -r dir; do
     # Clang configs
     for cfg in STARM_HYBRID STARM_NEWLIB STARM_PICOLIBC; do
         echo ">>>> [Clang] Config: $cfg"
+        case "$cfg" in
+            STARM_HYBRID) stdlib=--hybrid ;;
+            STARM_NEWLIB) stdlib=--newlib ;;
+            STARM_PICOLIBC) stdlib=--picolibc ;;
+        esac
+        xr_stm32_toolchain_switch clang "$stdlib"
         cmake . -B"build-clang-$cfg" -G Ninja -DCMAKE_TOOLCHAIN_FILE="cmake/starm-clang.cmake" -DSTARM_TOOLCHAIN_CONFIG=$cfg
         cmake --build "build-clang-$cfg"
     done
