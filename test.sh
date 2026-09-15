@@ -23,12 +23,12 @@ select_dirs() {
     else
         for dir in */ ; do
             [ "${dir#.*}" != "$dir" ] && continue
+            [ -f "$dir/CMakeLists.txt" ] || continue
             printf '%s\n' "${dir%/}"
         done
     fi
 }
 
-./restore.sh
 
 echo "==== Batch build (gcc + clang: HYBRID/NEWLIB/PICOLIBC) ===="
 
@@ -42,7 +42,7 @@ select_dirs | while IFS= read -r dir; do
     # ===== 切换 LibXR 到目标分支 =====
     libxr_dir="Middlewares/Third_Party/LibXR"
     echo ">>>> [Git] LibXR: checkout $branch"
-    (cd "$libxr_dir" && git checkout "$branch")
+    (cd "$libxr_dir" && git fetch origin "$branch" && git checkout --detach FETCH_HEAD)
 
     # GCC build
     echo ">>>> [GCC] Building"
