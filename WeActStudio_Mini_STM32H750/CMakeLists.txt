@@ -14,8 +14,10 @@ set(CMAKE_C_EXTENSIONS ON)
 
 
 # Define the build type
+# Release by default: with the LibXR USB device stack the starm-clang Debug image (-Og)
+# no longer fits the 128 KB internal flash.
 if(NOT CMAKE_BUILD_TYPE)
-    set(CMAKE_BUILD_TYPE "Debug")
+    set(CMAKE_BUILD_TYPE "Release")
 endif()
 
 # Set the project name
