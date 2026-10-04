@@ -1,5 +1,5 @@
 param(
-    [string]$Branch = "master",
+    [string]$Branch = "dev",
     [string[]]$Target = @()
 )
 
@@ -7,7 +7,7 @@ Set-StrictMode -Version Latest
 $ErrorActionPreference = "Stop"
 
 function Check-LastExit {
-    if (-not $?) {
+    if ($LASTEXITCODE -ne 0) {
         throw "Previous command failed. Exiting."
     }
 }
@@ -45,10 +45,6 @@ function Build-Project($dir, $toolchain, [string[]]$extraArgs = @(), $buildSuffi
     Check-LastExit
 }
 
-Write-Output "=== Running restore.ps1 ==="
-& .\restore.ps1
-Check-LastExit
-
 $dirs = if ($Target.Count -gt 0) {
     foreach ($name in $Target) {
         $dir = Get-Item -Path $name -ErrorAction SilentlyContinue
@@ -59,17 +55,23 @@ $dirs = if ($Target.Count -gt 0) {
     }
 }
 else {
-    Get-ChildItem -Directory | Where-Object { $_.Name -notmatch '^\.' }
+    Get-ChildItem -Directory | Where-Object { $_.Name -notmatch '^\.' -and (Test-Path (Join-Path $_.FullName 'CMakeLists.txt')) }
+}
+
+if (-not $dirs) {
+    throw "No STM32 target projects found."
 }
 
 foreach ($dir in $dirs) {
     Write-Output ">>> Processing: $($dir.Name)"
 
-    & xr_cubemx_cfg -d $dir.FullName
+    & libxr stm32 setup -d $dir.FullName
     Check-LastExit
 
     Push-Location (Join-Path $dir.FullName "Middlewares\Third_Party\LibXR")
-    git checkout $Branch
+    git fetch origin $Branch
+    Check-LastExit
+    git checkout --detach FETCH_HEAD
     Pop-Location
     Check-LastExit
 
@@ -81,6 +83,19 @@ foreach ($dir in $dirs) {
     $clangConfigs = @("STARM_HYBRID", "STARM_NEWLIB", "STARM_PICOLIBC")
     foreach ($cfg in $clangConfigs) {
         Write-Output ">>>> [Clang] Config: $cfg"
+        $stdlib = switch ($cfg) {
+            "STARM_HYBRID" { "--hybrid" }
+            "STARM_NEWLIB" { "--newlib" }
+            "STARM_PICOLIBC" { "--picolibc" }
+        }
+        Push-Location $dir.FullName
+        try {
+            & libxr stm32 toolchain clang $stdlib
+            Check-LastExit
+        }
+        finally {
+            Pop-Location
+        }
         Build-Project $dir "starm-clang.cmake" @("-DSTARM_TOOLCHAIN_CONFIG=$cfg") ("-clang-$cfg")
     }
 }
