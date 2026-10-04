@@ -50,12 +50,7 @@ static UCHAR tx_byte_pool_buffer[TX_APP_MEM_POOL_SIZE];
 static TX_BYTE_POOL tx_app_byte_pool;
 
 /* USER CODE BEGIN PV */
-#include "app_main.h"
-void init_thread_entry(ULONG thread_input)
-{
-  (void)(thread_input);
-  app_main();
-}
+
 /* USER CODE END PV */
 
 /* Private function prototypes -----------------------------------------------*/
