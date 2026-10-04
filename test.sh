@@ -42,7 +42,7 @@ printf '%s\n' "$selected_dirs" | while IFS= read -r dir; do
 
     cd "$dir"
 
-    xr_cubemx_cfg -d .
+    libxr stm32 setup -d .
 
     # ===== 切换 LibXR 到目标分支 =====
     libxr_dir="Middlewares/Third_Party/LibXR"
@@ -65,7 +65,7 @@ printf '%s\n' "$selected_dirs" | while IFS= read -r dir; do
             STARM_NEWLIB) stdlib=--newlib ;;
             STARM_PICOLIBC) stdlib=--picolibc ;;
         esac
-        xr_stm32_toolchain_switch clang "$stdlib"
+        libxr stm32 toolchain clang "$stdlib"
         cmake . -B"build-clang-$cfg" -G Ninja -DCMAKE_TOOLCHAIN_FILE="cmake/starm-clang.cmake" -DSTARM_TOOLCHAIN_CONFIG=$cfg
         cmake --build "build-clang-$cfg"
     done

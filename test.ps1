@@ -65,7 +65,7 @@ if (-not $dirs) {
 foreach ($dir in $dirs) {
     Write-Output ">>> Processing: $($dir.Name)"
 
-    & xr_cubemx_cfg -d $dir.FullName
+    & libxr stm32 setup -d $dir.FullName
     Check-LastExit
 
     Push-Location (Join-Path $dir.FullName "Middlewares\Third_Party\LibXR")
@@ -90,7 +90,7 @@ foreach ($dir in $dirs) {
         }
         Push-Location $dir.FullName
         try {
-            & xr_stm32_toolchain_switch clang $stdlib
+            & libxr stm32 toolchain clang $stdlib
             Check-LastExit
         }
         finally {
