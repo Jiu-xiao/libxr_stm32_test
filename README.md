@@ -40,10 +40,10 @@ Each target is built in turn with the four toolchain configurations in the table
 
 ### Linux
 
-Linux 下使用镜像 `ghcr.io/xrobot-org/docker-image-stm32:main`，镜像提供 CMake、Ninja、GNU Arm Embedded 14.2 和 ST Arm Clang。`libxr` 包提供 `libxr stm32 setup` 和 `libxr stm32 toolchain` 命令，其版本与被测的 LibXR 对应，测试 LibXR 6.0.0 使用 `libxr` 6.0.0。`test.sh` 的参数依次为 LibXR 的分支、标签或提交（默认 `dev`）和目标目录（默认全部目标）。
+Linux 下使用镜像 `ghcr.io/xrobot-org/docker-image-stm32:main`，镜像提供 CMake、Ninja、GNU Arm Embedded 14.2 和 ST Arm Clang。`libxr` 包提供 `libxr stm32 setup` 和 `libxr stm32 toolchain` 命令，使用与被测 LibXR 提交配套的版本，当前为 6.0.0。`test.sh` 的参数依次为 LibXR 的分支、标签或提交（默认 `dev`）和目标目录（默认全部目标）。
 
 ```bash
-git clone https://github.com/xrobot-org/libxr_stm32_test.git
+git clone https://github.com/Jiu-xiao/libxr_stm32_test.git
 cd libxr_stm32_test
 docker run --rm -v "$PWD:/work" -w /work ghcr.io/xrobot-org/docker-image-stm32:main \
   bash -c "git config --global --add safe.directory '*' && pip install libxr==6.0.0 && ./test.sh dev DevC-STM32F407IG MC02-STM32H723VG BluePill-STM32F103C8-USB"
@@ -51,23 +51,24 @@ docker run --rm -v "$PWD:/work" -w /work ghcr.io/xrobot-org/docker-image-stm32:m
 
 `test.sh` 对每个目标依次运行 `libxr stm32 setup`，在 `Middlewares/Third_Party/LibXR` 中执行 `git fetch origin <ref>` 并检出获取到的提交，再完成第 2 节的四次构建；全部结束后列出生成的 ELF 文件。`restore.sh` 删除所有目标目录，并用 `git restore`、`git reset --hard` 和 `git clean -fd` 把仓库还原到提交状态，同时清除 `.git/modules`。
 
-On Linux the image `ghcr.io/xrobot-org/docker-image-stm32:main` provides CMake, Ninja, GNU Arm Embedded 14.2 and ST Arm Clang. The `libxr` package provides the `libxr stm32 setup` and `libxr stm32 toolchain` commands; its version corresponds to the LibXR under test, and testing LibXR 6.0.0 uses `libxr` 6.0.0. The arguments of `test.sh` are the LibXR branch, tag or commit (default `dev`) followed by the target directories (default all targets).
+On Linux the image `ghcr.io/xrobot-org/docker-image-stm32:main` provides CMake, Ninja, GNU Arm Embedded 14.2 and ST Arm Clang. The `libxr` package provides the `libxr stm32 setup` and `libxr stm32 toolchain` commands; the version used is the one that matches the LibXR commit under test, currently 6.0.0. The arguments of `test.sh` are the LibXR branch, tag or commit (default `dev`) followed by the target directories (default all targets).
 
 For each target `test.sh` runs `libxr stm32 setup`, executes `git fetch origin <ref>` in `Middlewares/Third_Party/LibXR`, checks out the fetched commit and performs the four builds of section 2; when everything is done it lists the generated ELF files. `restore.sh` deletes all target directories, restores the repository to the committed state with `git restore`, `git reset --hard` and `git clean -fd`, and clears `.git/modules`.
 
 ### Windows
 
-基于 STM32Cube for VS Code 插件下载的包，配置 `PATH`：
+基于 STM32Cube for VS Code 插件下载的包配置 `PATH`，版本号按本机 `stm32cube\bundles` 中的目录替换：
 
 ```powershell
-C:\Users\$env:USERNAME\AppData\Local\stm32cube\bundles\gnu-tools-for-stm32\13.3.1+st.9\bin;C:\Users\$env:USERNAME\AppData\Local\stm32cube\bundles\gnu-gdb-for-stm32\13.3.1+st.10\bin;C:\Users\$env:USERNAME\AppData\Local\stm32cube\bundles\st-arm-clang\19.1.6+st.8\bin;C:\Users\$env:USERNAME\AppData\Local\stm32cube\bundles\st-arm-clangd\19.1.2+st.3\bin;C:\Users\$env:USERNAME\AppData\Local\stm32cube\bundles\stlink-gdbserver\7.10.0+st.3\bin;C:\Users\$env:USERNAME\AppData\Local\stm32cube\bundles\stlink-server\2.1.1+st.7\bin;C:\Users\$env:USERNAME\AppData\Local\stm32cube\bundles\cmake\4.0.1+st.3\bin;C:\Users\$env:USERNAME\AppData\Local\stm32cube\bundles\ninja\1.12.1+st.9\bin
+$bundles = "$env:LOCALAPPDATA\stm32cube\bundles"
+$env:Path = "$bundles\gnu-tools-for-stm32\13.3.1+st.9\bin;$bundles\gnu-gdb-for-stm32\13.3.1+st.10\bin;$bundles\st-arm-clang\19.1.6+st.8\bin;$bundles\st-arm-clangd\19.1.2+st.3\bin;$bundles\stlink-gdbserver\7.10.0+st.3\bin;$bundles\stlink-server\2.1.1+st.7\bin;$bundles\cmake\4.0.1+st.3\bin;$bundles\ninja\1.12.1+st.9\bin;" + $env:Path
 ```
 
 设置环境变量：
 
 ```powershell
-$env:GCC_TOOLCHAIN_ROOT = "C:\Users\$env:USERNAME\AppData\Local\stm32cube\bundles\gnu-tools-for-stm32\13.3.1+st.9\bin"
-$env:CLANG_GCC_CMSIS_COMPILER = "C:\Users\$env:USERNAME\AppData\Local\stm32cube\bundles\st-arm-clang\19.1.6+st.8"
+$env:GCC_TOOLCHAIN_ROOT = "$env:LOCALAPPDATA\stm32cube\bundles\gnu-tools-for-stm32\13.3.1+st.9\bin"
+$env:CLANG_GCC_CMSIS_COMPILER = "$env:LOCALAPPDATA\stm32cube\bundles\st-arm-clang\19.1.6+st.8"
 ```
 
 `test.ps1` 的参数 `-Branch`（默认 `dev`）和 `-Target`（目标目录，默认全部目标）与 `test.sh` 的参数对应：
@@ -77,13 +78,13 @@ pip install libxr==6.0.0
 .\test.ps1 -Branch dev -Target DevC-STM32F407IG
 ```
 
-The packages downloaded by the STM32Cube for VS Code extension are used, with `PATH` set as in the first PowerShell block and the environment variables `GCC_TOOLCHAIN_ROOT` and `CLANG_GCC_CMSIS_COMPILER` pointing at the GNU Arm Embedded `bin` directory and the ST Arm Clang directory. The parameters `-Branch` (default `dev`) and `-Target` (target directories, default all targets) of `test.ps1` correspond to the arguments of `test.sh`.
+The packages downloaded by the STM32Cube for VS Code extension are used, with `PATH` set as in the first PowerShell block (the version numbers follow the directories in the local `stm32cube\bundles`) and the environment variables `GCC_TOOLCHAIN_ROOT` and `CLANG_GCC_CMSIS_COMPILER` pointing at the GNU Arm Embedded `bin` directory and the ST Arm Clang directory. The parameters `-Branch` (default `dev`) and `-Target` (target directories, default all targets) of `test.ps1` correspond to the arguments of `test.sh`.
 
 ## 4. 烧录与运行 / Flash and Run
 
-工程仅用于编译测试，不保证能在 STM32 上正常运行。构建产物为各构建目录中的 ELF 文件。
+工程只用于编译测试，构建产物为各构建目录中的 ELF 文件。
 
-The projects are only used for build tests and are not guaranteed to run on an STM32. The build output is the ELF file in each build directory.
+The projects are used for build tests; the build output is the ELF file in each build directory.
 
 本仓库以 Apache-2.0 发布，见 [LICENSE](LICENSE)；各目录中 STM32CubeMX 生成的代码、ST 的 HAL 与 CMSIS、FreeRTOS 和 Azure RTOS 保留各自文件头中的版权与许可声明。
 
